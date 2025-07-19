@@ -14,8 +14,14 @@ output = "SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t"
 b = bytes.fromhex(input)
 print(b)
 print(type(b))
+print(f"{int(input, 16):b}")
+print(f"{int(input, 16):o}")
+print(f"{int(input, 16):x}")
+
+assert f"{int(input, 16):x}".upper() == input
 
 b64 = base64.b64encode(b).decode("ascii")
 print(b64)
+print(type(b64))
 
 assert b64 == output
