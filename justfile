@@ -1,0 +1,2 @@
+pals:
+  uv run cryptopals
