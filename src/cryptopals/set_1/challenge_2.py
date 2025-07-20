@@ -14,11 +14,6 @@
 # 746865206b696420646f6e277420706c6179
 
 
-hex_str1 = "1c0111001f010100061a024b53535009181c"
-hex_str2 = "686974207468652062756c6c277320657965"
-hex_out = "746865206b696420646f6e277420706c6179"
-
-
 def fixed_xor(hex_1: str, hex_2: str) -> str:
     assert len(hex_1) == len(hex_2)
 
@@ -42,4 +37,9 @@ def fixed_xor(hex_1: str, hex_2: str) -> str:
     return xored_hex_str
 
 
-assert fixed_xor(hex_str1, hex_str2) == hex_out
+if __name__ == "__main__":
+    hex_str1 = "1c0111001f010100061a024b53535009181c"
+    hex_str2 = "686974207468652062756c6c277320657965"
+    hex_out = "746865206b696420646f6e277420706c6179"
+
+    assert fixed_xor(hex_str1, hex_str2) == hex_out

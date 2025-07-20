@@ -16,8 +16,6 @@
 
 import base64
 
-test_hex_string = "49276D206B696C6C696E6720796F757220627261696E206C696B65206120706F69736F6E6F7573206D757368726F6F6D"
-test_base64_string = "SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t"
 
 # print(f"{int(hex_string, 16):b}")
 # print(f"{int(hex_string, 16):o}")
@@ -43,5 +41,11 @@ def base64_to_hex(base64_str: str) -> str:
     return hex_str
 
 
-assert hex_to_base64(test_hex_string) == test_base64_string
-assert base64_to_hex(test_base64_string) == test_hex_string.lower()
+if __name__ == "__main__":
+    test_hex_string = "49276D206B696C6C696E6720796F757220627261696E206C696B65206120706F69736F6E6F7573206D757368726F6F6D"
+    test_base64_string = (
+        "SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t"
+    )
+
+    assert hex_to_base64(test_hex_string) == test_base64_string
+    assert base64_to_hex(test_base64_string) == test_hex_string.lower()
