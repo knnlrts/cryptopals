@@ -41,4 +41,68 @@
 # We get more tech support questions for this challenge than any of the other ones. We promise,
 # there aren't any blatant errors in this text. In particular: the "wokka wokka!!!" edit distance really is 37.
 
+from challenge_1 import base64_to_hex
 
+
+# calculate the hamming disctance
+def calculate_hamming_distance(str_1: str, str_2: str) -> int:
+    str_1_bytes = str_1.encode()
+    # print(str_1_bytes)
+    # print([format(byte, "08b") for byte in str_1_bytes])
+    str_2_bytes = str_2.encode()
+    # print(str_2_bytes)
+    # print([format(byte, "08b") for byte in str_2_bytes])
+    xor_bytes = bytes([a ^ b for (a, b) in zip(str_1_bytes, str_2_bytes)])
+    # print(xor_bytes)
+    # print([format(byte, "08b") for byte in xor_bytes])
+    hamming_distance = sum([byte.bit_count() for byte in xor_bytes])
+    # print(hamming_distance)
+    return hamming_distance
+
+
+def decrypt_repeating_key_XOR(base64_str: str, blocks: int):
+    hex_str = base64_to_hex(base64_str)
+    # test keysizes between 2 and 40
+    KEYSIZES = list(range(2, 41))
+
+    keysize_hamming = dict()
+
+    for keysize in KEYSIZES:
+        # get the first KEYSIZE blocks
+        hex_strings = [hex_str[keysize * i : keysize * (i + 1)] for i in range(blocks)]
+        print(hex_strings)
+        # get pairwise hamming distances
+        hamming_distances = [
+            calculate_hamming_distance(i, j)
+            for i, j in zip(hex_strings, hex_strings[1:])
+        ]
+        print(hamming_distances)
+        normalized_hamming = sum(hamming_distances) / keysize
+        # get normalized hamming distance
+        print(normalized_hamming)
+        keysize_hamming[keysize] = normalized_hamming
+
+    # sort the keysizes by lowest hamming distance
+    sorted_keysize_hamming = sorted(keysize_hamming.items(), key=lambda x: x[1])
+    print(sorted_keysize_hamming)
+
+    # continue with the 3 lowest hamming distance keysizes
+    for keysize, _ in sorted_keysize_hamming[:3]:
+        # break the ciphertext into blocks of keysize length
+        chunks = [hex_str[i : i + keysize] for i in range(0, len(hex_str), keysize)]
+        print(chunks)
+
+
+if __name__ == "__main__":
+    str_1 = "this is a test"
+    str_2 = "wokka wokka!!!"
+
+    base64_str = """HUIfTQsPAh9PE048GmllH0kcDk4TAQsHThsBFkU2AB4BSWQgVB0dQzNTTmVS
+BgBHVBwNRU0HBAxTEjwMHghJGgkRTxRMIRpHKwAFHUdZEQQJAGQmB1MANxYG
+DBoXQR0BUlQwXwAgEwoFR08SSAhFTmU+Fgk4RQYFCBpGB08fWXh+amI2DB0P
+QQ1IBlUaGwAdQnQEHgFJGgkRAlJ6f0kASDoAGhNJGk9FSA8dDVMEOgFSGQEL
+QRMGAEwxX1NiFQYHCQdUCxdBFBZJeTM1CxsBBQ9GB08dTnhOSCdSBAcMRVhI"""
+
+    assert calculate_hamming_distance(str_1, str_2) == 37
+
+    decrypt_repeating_key_XOR(base64_str, 2)
