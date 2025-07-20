@@ -18,21 +18,21 @@ def fixed_xor(hex_1: str, hex_2: str) -> str:
     assert len(hex_1) == len(hex_2)
 
     raw_bytes_1 = bytes.fromhex(hex_1)
-    print(hex_1)
-    print(raw_bytes_1)
-    print([format(byte, "08b") for byte in raw_bytes_1])
+    # print(hex_1)
+    # print(raw_bytes_1)
+    # print([format(byte, "08b") for byte in raw_bytes_1])
 
     raw_bytes_2 = bytes.fromhex(hex_2)
-    print(hex_2)
-    print(raw_bytes_2)
-    print([format(byte, "08b") for byte in raw_bytes_2])
+    # print(hex_2)
+    # print(raw_bytes_2)
+    # print([format(byte, "08b") for byte in raw_bytes_2])
 
     xored_bytes = bytes([a ^ b for (a, b) in zip(raw_bytes_1, raw_bytes_2)])
-    print(xored_bytes)
-    print([format(byte, "08b") for byte in xored_bytes])
+    # print(xored_bytes)
+    # print([format(byte, "08b") for byte in xored_bytes])
 
     xored_hex_str = xored_bytes.hex()
-    print(xored_hex_str)
+    # print(xored_hex_str)
 
     return xored_hex_str
 

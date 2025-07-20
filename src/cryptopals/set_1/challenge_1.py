@@ -25,19 +25,19 @@ import base64
 def hex_to_base64(hex_str: str) -> str:
     assert len(hex_str) % 2 == 0
     raw_bytes = bytes.fromhex(hex_str)
-    print(raw_bytes)
-    print([format(byte, "08b") for byte in raw_bytes])
+    # print(raw_bytes)
+    # print([format(byte, "08b") for byte in raw_bytes])
     encoded_base64 = base64.b64encode(raw_bytes).decode()
-    print(encoded_base64)
+    # print(encoded_base64)
     return encoded_base64
 
 
 def base64_to_hex(base64_str: str) -> str:
     raw_bytes = base64.b64decode(base64_str)
-    print(raw_bytes)
-    print([bin(byte)[2:].zfill(8) for byte in raw_bytes])
+    # print(raw_bytes)
+    # print([bin(byte)[2:].zfill(8) for byte in raw_bytes])
     hex_str = raw_bytes.hex()
-    print(hex_str)
+    # print(hex_str)
     return hex_str
 
 

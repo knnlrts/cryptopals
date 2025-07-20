@@ -69,8 +69,8 @@ def decrypt_single_byte_XOR_cipher(hex_string: str) -> Tuple:
     for cipher in range(256):
         xored_bytes = bytes([byte ^ cipher for byte in data])
         if all(byte in printable_chars for byte in xored_bytes):
-            print(f"Candidate cipher: {cipher} = {chr(cipher)}")
-            print(f"Candidate XOR'ed bytes: {xored_bytes}")
+            # print(f"Candidate cipher: {cipher} = {chr(cipher)}")
+            # print(f"Candidate XOR'ed bytes: {xored_bytes}")
 
             candidate_text = xored_bytes.decode("ascii")
             score = 0
@@ -80,7 +80,7 @@ def decrypt_single_byte_XOR_cipher(hex_string: str) -> Tuple:
                 if char_lower in weights:
                     score += weights[char_lower]
 
-            print(f"Frequency score: {score}")
+            # print(f"Frequency score: {score}")
 
             if score > best_score:
                 best_score = score
