@@ -42,6 +42,7 @@
 # there aren't any blatant errors in this text. In particular: the "wokka wokka!!!" edit distance really is 37.
 
 from challenge_1 import base64_to_hex
+from challenge_3 import decrypt_single_byte_XOR_cipher
 
 
 # calculate the hamming disctance
@@ -62,35 +63,62 @@ def calculate_hamming_distance(str_1: str, str_2: str) -> int:
 
 def decrypt_repeating_key_XOR(base64_str: str, blocks: int):
     hex_str = base64_to_hex(base64_str)
-    # test keysizes between 2 and 40
-    KEYSIZES = list(range(2, 41))
+    # test keysizes between 2 bytes and 40 bytes (1 byte = 2 hex digits)
+    KEYSIZES = list(range(4, 81, 2))
+    print(KEYSIZES)
 
     keysize_hamming = dict()
 
     for keysize in KEYSIZES:
         # get the first KEYSIZE blocks
+        print(f"Keysize: {int(keysize / 2)} bytes")
         hex_strings = [hex_str[keysize * i : keysize * (i + 1)] for i in range(blocks)]
-        print(hex_strings)
+        print(f"{blocks} first {int(keysize / 2)} byte hex strings: {hex_strings}")
         # get pairwise hamming distances
         hamming_distances = [
             calculate_hamming_distance(i, j)
             for i, j in zip(hex_strings, hex_strings[1:])
         ]
-        print(hamming_distances)
-        normalized_hamming = sum(hamming_distances) / keysize
+        print(f"Pairwise hamming distances: {hamming_distances}")
+        normalized_hamming = (
+            (sum(hamming_distances) / keysize)
+            if blocks == 2
+            else (sum(hamming_distances) / len(hamming_distances))
+        )
         # get normalized hamming distance
-        print(normalized_hamming)
+        print(f"Normalized hamming distance: {normalized_hamming}\n")
         keysize_hamming[keysize] = normalized_hamming
 
     # sort the keysizes by lowest hamming distance
     sorted_keysize_hamming = sorted(keysize_hamming.items(), key=lambda x: x[1])
-    print(sorted_keysize_hamming)
+    print(
+        f"Keysizes sorted by lowest normalized hamming distance: {sorted_keysize_hamming}\n"
+    )
 
     # continue with the 3 lowest hamming distance keysizes
     for keysize, _ in sorted_keysize_hamming[:3]:
         # break the ciphertext into blocks of keysize length
-        chunks = [hex_str[i : i + keysize] for i in range(0, len(hex_str), keysize)]
+        chunks = [
+            # bytes.fromhex(hex_str[i : i + keysize])
+            hex_str[i : i + keysize]
+            for i in range(0, len(hex_str), keysize)
+        ]
         print(chunks)
+
+        # transpose the blocks
+        # Split each hex string into 2-character chunks (bytes)
+        split_bytes = [[s[i : i + 2] for i in range(0, len(s), 2)] for s in chunks]
+        # Transpose the list of lists (matrix)
+        transposed = list(zip(*split_bytes))
+        # Join each group of bytes to form new hex strings
+        transposed_hex_strings = ["".join(group) for group in transposed]
+        print(transposed_hex_strings)
+
+        # break single-byte XOR
+        for hex_str in transposed_hex_strings:
+            cipher, decrypted_text = decrypt_single_byte_XOR_cipher(hex_str)
+            print(cipher)
+            print(decrypted_text)
 
 
 if __name__ == "__main__":
@@ -101,7 +129,12 @@ if __name__ == "__main__":
 BgBHVBwNRU0HBAxTEjwMHghJGgkRTxRMIRpHKwAFHUdZEQQJAGQmB1MANxYG
 DBoXQR0BUlQwXwAgEwoFR08SSAhFTmU+Fgk4RQYFCBpGB08fWXh+amI2DB0P
 QQ1IBlUaGwAdQnQEHgFJGgkRAlJ6f0kASDoAGhNJGk9FSA8dDVMEOgFSGQEL
-QRMGAEwxX1NiFQYHCQdUCxdBFBZJeTM1CxsBBQ9GB08dTnhOSCdSBAcMRVhI"""
+QRMGAEwxX1NiFQYHCQdUCxdBFBZJeTM1CxsBBQ9GB08dTnhOSCdSBAcMRVhI
+CEEATyBUCHQLHRlJAgAOFlwAUjBpZR9JAgJUAAELB04CEFMBJhAVTQIHAh9P
+G054MGk2UgoBCVQGBwlTTgIQUwg7EAYFSQ8PEE87ADpfRyscSWQzT1QCEFMa
+TwUWEXQMBk0PAg4DQ1JMPU4ALwtJDQhOFw0VVB1PDhxFXigLTRkBEgcKVVN4
+Tk9iBgELR1MdDAAAFwoFHww6Ql5NLgFBIg4cSTRWQWI1Bk9HKn47CE8BGwFT
+QjcEBx4MThUcDgYHKxpUKhdJGQZZVCFFVwcDBVMHMUV4LAcKQR0JUlk3TwAm"""
 
     assert calculate_hamming_distance(str_1, str_2) == 37
 
