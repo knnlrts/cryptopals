@@ -65,6 +65,7 @@ def plaintext_frequency(str_in: str) -> List[Tuple]:
 
 def decrypt_single_byte_XOR_cipher(hex_string: str) -> Tuple:
     data = bytes.fromhex(hex_string)
+    # print(data)
     printable_chars = set(string.printable.encode("ascii"))
     best_score = float("-inf")
     best_cipher = None
