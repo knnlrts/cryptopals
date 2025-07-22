@@ -7,7 +7,9 @@ authors = [
     { name = "koen", email = "koen.naulaerts@gmail.com" }
 ]
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "cryptography",
+]
 
 [project.scripts]
 cryptopals = "cryptopals:main"
