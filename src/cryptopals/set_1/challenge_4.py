@@ -11,12 +11,14 @@
 # (Your code from #3 should help.)
 
 
-from challenge_3 import decrypt_single_byte_XOR_cipher
+from challenge_3 import single_byte_xor_decrypt
 
 with open("src/cryptopals/set_1/challenge_4.txt", "r") as file:
     for line in file:
-        cipher, decrypted_text = decrypt_single_byte_XOR_cipher(line)
+        cipher, decrypted_text, _ = single_byte_xor_decrypt(bytes.fromhex(line))
         if cipher is not None:
             print(f"Hex string: {line.strip('\n')}")
             print(f"Cipher: {cipher} (as char: {chr(cipher) if cipher else 'None'})")
-            print(f"Decrypted plaintext: {decrypted_text.encode('ascii')}")
+            print(
+                f"Decrypted plaintext: {decrypted_text.encode('ascii') if decrypted_text is not None else 'None'}"
+            )
