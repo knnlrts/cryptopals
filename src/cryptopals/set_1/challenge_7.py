@@ -17,6 +17,7 @@
 # You can obviously decrypt this using the OpenSSL command-line tool, but we're having you get ECB working in code for a reason.
 # You'll need it a lot later on, and not just for attacking ECB.
 
+# >>> b"YELLOW SUBMARINE".hex()
 # openssl enc -d -aes-128-ecb -in src/cryptopals/set_1/challenge_7.txt -K 59454C4C4F57205355424D4152494E45 -a
 
 import base64

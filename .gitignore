@@ -12,3 +12,4 @@ wheels/
 # dotenv files
 .env
 .env.*
+.aider*
