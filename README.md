@@ -6,12 +6,11 @@
 
 - Set 1: Basic crypto challenges
   - Hex/base64 conversions
-  - Fixed XOR cipher
-  - Single-bycyber XBREAK cipher breaking
+  - Repeating-key XOR cipher breaking
   - Detect AES-ECB encryption
   - And more...
 - Clean type-annotated Python code
-- Comprehensive test coverage
+- Best effort test coverage
 - Practical crypto examples
 
 ## Installation
