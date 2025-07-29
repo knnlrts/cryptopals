@@ -42,7 +42,7 @@ def main() -> None:
     # keysize = 2
 
     # The file path is relative to this script
-    file_path = Path(__file__).parent / "challenge_8.txt"
+    file_path = Path(__file__).parent / "challenge_08.txt"
 
     with open(file_path, "r") as f:
         result = detect_ecb_encryption(f.readlines(), keysize)

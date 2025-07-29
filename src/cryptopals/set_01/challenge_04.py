@@ -11,9 +11,9 @@
 # (Your code from #3 should help.)
 
 
-from challenge_3 import single_byte_xor_decrypt
+from challenge_03 import single_byte_xor_decrypt
 
-with open("src/cryptopals/set_1/challenge_4.txt", "r") as file:
+with open("src/cryptopals/set_01/challenge_04.txt", "r") as file:
     for line in file:
         cipher, decrypted_text, _ = single_byte_xor_decrypt(bytes.fromhex(line))
         if cipher is not None:

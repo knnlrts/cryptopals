@@ -41,8 +41,8 @@
 # We get more tech support questions for this challenge than any of the other ones. We promise,
 # there aren't any blatant errors in this text. In particular: the "wokka wokka!!!" edit distance really is 37.
 
-from challenge_1 import base64_to_hex
-from challenge_3 import single_byte_xor_decrypt
+from challenge_01 import base64_to_hex
+from challenge_03 import single_byte_xor_decrypt
 from typing import List, Tuple
 
 
@@ -171,7 +171,7 @@ if __name__ == "__main__":
 
     try:
         with open(
-            "src/cryptopals/set_1/challenge_6.txt", "rb"
+            "src/cryptopals/set_01/challenge_06.txt", "rb"
         ) as f:  # "rb" returns file content as bytes
             # Read and decode base64
             base64_data = f.read()
@@ -185,7 +185,7 @@ if __name__ == "__main__":
         ), f"Decryption failed: {ciphertext}"
 
     except FileNotFoundError:
-        print("Error: File 'challenge_6.txt' not found")
+        print("Error: File 'challenge_06.txt' not found")
     except Exception as e:
         print(f"Error: {e}")
 

@@ -38,7 +38,7 @@ def main() -> None:
     key = b"YELLOW SUBMARINE"
 
     # The file path is relative to this script
-    file_path = Path(__file__).parent / "challenge_7.txt"
+    file_path = Path(__file__).parent / "challenge_07.txt"
 
     with open(file_path, "rb") as f:
         base64_content = f.read()
