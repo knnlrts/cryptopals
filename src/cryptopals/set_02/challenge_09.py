@@ -27,7 +27,9 @@ def pad_text_to_block_cipher_size(text: bytes, block_cipher_size: int) -> bytes:
     # print(padding_needed)
 
     # Each padding byte contains the number of padding bytes added
-    padding_byte = padding_needed  # % 256  # Wrap around for large values
+    padding_byte = (
+        padding_needed  # % 256  # Wrap around for large values (non-standard!)
+    )
     # print(padding_byte)
 
     padding = bytes([padding_byte]) * padding_needed
