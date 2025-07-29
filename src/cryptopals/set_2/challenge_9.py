@@ -17,23 +17,37 @@
 # "YELLOW SUBMARINE\x04\x04\x04\x04"
 
 
-def pad_cipher_to_blocksize(cipher: bytes, blocksize: int, fill_byte: int = 4) -> bytes:
+def pad_text_to_block_cipher_size(text: bytes, block_cipher_size: int) -> bytes:
     assert (
-        len(cipher) < blocksize
-    ), "Cipher length should be smaller than blocksize for padding"
-    assert fill_byte < 256 and fill_byte >= 0, "fill_byte needs to be a valid byte"
-    return cipher.ljust(blocksize, bytes([fill_byte]))
+        0 < block_cipher_size <= 255
+    ), "PKCS#7 only supports block sizes up to 255 bytes"
+
+    # If the message is already a multiple of the block size, you must add a full block of padding
+    padding_needed = block_cipher_size - (len(text) % block_cipher_size)
+    # print(padding_needed)
+
+    # Each padding byte contains the number of padding bytes added
+    padding_byte = padding_needed  # % 256  # Wrap around for large values
+    # print(padding_byte)
+
+    padding = bytes([padding_byte]) * padding_needed
+    padded_text = text + padding
+    # print(len(padded_text))
+
+    return padded_text
 
 
 if __name__ == "__main__":
-    cipher = "YELLOW SUBMARINE"
+    text = "YELLOW SUBMARINE"
     block_size = 20
 
-    padded_cipher = pad_cipher_to_blocksize(cipher.encode(), block_size)
+    padded_text = pad_text_to_block_cipher_size(text.encode(), block_size)
     assert (
-        padded_cipher == b"YELLOW SUBMARINE\x04\x04\x04\x04"
-    ), f"Expected {padded_cipher} to be equal to b'YELLOW SUBMARINE\x04\x04\x04\x04'"
-    print(padded_cipher)
+        padded_text == b"YELLOW SUBMARINE\x04\x04\x04\x04"
+    ), f"Expected {padded_text} to be equal to b'YELLOW SUBMARINE\x04\x04\x04\x04'"
+    print(padded_text)
 
-    # bunchaBytes = bytes([4, 5, 10, 15, 20, 65])
-    # print(bunchaBytes)
+    # buncha_bytes = bytes(
+    #     [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 65]
+    # )
+    # print(buncha_bytes)
