@@ -6,6 +6,7 @@
 #   "pycryptodome",
 #   "matplotlib",
 #   "pillow",
+#   "kitcat",
 # ]
 # ///
 
@@ -27,13 +28,16 @@
 import os
 from pathlib import Path
 from PIL import Image, ImageDraw
+import matplotlib
 import matplotlib.pyplot as plt
-
 
 from challenge_07 import (
     aes_128_encrypt_cryptography,
     aes_128_encrypt_pycryptodome,
 )
+
+
+matplotlib.use("kitcat")
 
 
 def create_test_image(width=256, height=256):
@@ -85,33 +89,65 @@ def encrypt_image(image, key):
 def display_images(original, encrypted):
     """Display original and encrypted images side by side"""
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
+    fig.patch.set_facecolor("#f8f9fa")
+
+    # Add professional frame
+    rect1 = plt.Rectangle(
+        (0, 0),
+        1,
+        1,
+        transform=ax1.transAxes,
+        fill=False,
+        edgecolor="#bdc3c7",
+        linewidth=1.5,
+    )
+    ax1.add_patch(rect1)
 
     # Original image
-    ax1.imshow(original)
-    ax1.set_title("Original Image", fontsize=10)
+    ax1.imshow(original, aspect="equal")
+    ax1.set_title(
+        "Original Image",
+        fontsize=10,
+        pad=10,
+    )
     ax1.axis("off")
 
+    # Add professional frame
+    rect2 = plt.Rectangle(
+        (0, 0),
+        1,
+        1,
+        transform=ax2.transAxes,
+        fill=False,
+        edgecolor="#bdc3c7",
+        linewidth=1.5,
+    )
+    ax2.add_patch(rect2)
+
     # Encrypted image
-    ax2.imshow(encrypted)
+    ax2.imshow(encrypted, aspect="equal")
     ax2.set_title(
         "AES-128 ECB Encrypted",
         fontsize=10,
+        pad=10,
     )
     ax2.axis("off")
 
-    # plt.tight_layout()
+    # Ensure proper layout
+    plt.tight_layout(pad=4)
+
     plt.suptitle(
         "AES-128 ECB Encryption of Images",
         fontsize=11,
         fontweight="bold",
     )
 
-    # Save the result
-    file_path = Path(__file__).parent / "ecb_encryption_comparison.png"
-    plt.savefig(file_path, dpi=150, bbox_inches="tight")
-    print(f"Comparison saved to {file_path}")
+    # # Save the result
+    # file_path = Path(__file__).parent / "ecb_encryption_comparison.png"
+    # plt.savefig(file_path, dpi=150, bbox_inches="tight")
+    # print(f"Comparison saved to {file_path}")
 
-    # plt.show()
+    plt.show()
 
 
 def load_image_file(filename):
