@@ -9,6 +9,9 @@ authors = [
 requires-python = ">=3.13"
 dependencies = [
     "cryptography",
+    "pycryptodome",
+    "matplotlib",
+    "pillow",
 ]
 
 [project.scripts]

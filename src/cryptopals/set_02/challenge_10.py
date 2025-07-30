@@ -18,4 +18,7 @@
 # Don't cheat!
 # Do not use OpenSSL's CBC code to do CBC mode, even to verify your results. What's the point of even doing this stuff if you aren't going to learn from it?
 
-from cryptopals.set_01.challenge_07 import decrypt_aes_128_ecb
+from ..set_01.challenge_07 import (
+    aes_128_encrypt_cryptography,
+    aes_128_encrypt_pycryptodome,
+)
