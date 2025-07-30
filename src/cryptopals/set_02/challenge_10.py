@@ -18,7 +18,37 @@
 # Don't cheat!
 # Do not use OpenSSL's CBC code to do CBC mode, even to verify your results. What's the point of even doing this stuff if you aren't going to learn from it?
 
+import base64
+from pathlib import Path
 from ..set_01.challenge_07 import (
     aes_128_encrypt_cryptography,
     aes_128_encrypt_pycryptodome,
+    aes_128_decrypt_cryptography,
+    aes_128_decrypt_pycryptodome,
 )
+
+iv = bytes([0] * 16)
+key = b"YELLOW SUBMARINE"
+
+file_path = Path(__file__).parent / "challenge_10.txt"
+with open(file_path, "rb") as f:
+    b64content = f.read()
+
+content = base64.b64decode(b64content)
+
+print(content)
+print(len(content) % 16)
+
+# decrypted = aes_128_decrypt_pycryptodome(content, key, iv, "CBC")
+
+encrypted_blocks = [content[i : i + len(key)] for i in range(0, len(content), len(key))]
+
+plaintext_blocks = []
+previous = iv
+for encrypted_block in encrypted_blocks:
+    decrypted_block = aes_128_decrypt_cryptography(encrypted_block, key, None, "ECB")
+    plaintext_block = bytes([a ^ b for a, b in zip(decrypted_block, previous)])
+    plaintext_blocks.append(plaintext_block)
+    previous = encrypted_block
+
+print(plaintext_blocks)

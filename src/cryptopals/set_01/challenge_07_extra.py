@@ -144,7 +144,7 @@ def display_images(original, encrypted):
 
     # # Save the result
     # file_path = Path(__file__).parent / "ecb_encryption_comparison.png"
-    # plt.savefig(file_path, dpi=150, bbox_inches="tight")
+    # plt.savefig(file_path, dpi=300, bbox_inches="tight")
     # print(f"Comparison saved to {file_path}")
 
     plt.show()
