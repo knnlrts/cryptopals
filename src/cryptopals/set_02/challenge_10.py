@@ -76,7 +76,9 @@ if __name__ == "__main__":
     with open(file_path, "rb") as f:
         b64content = f.read()
 
-    content = base64.b64decode(b64content)
+    content = base64.b64decode(
+        b64content, validate=False
+    )  # non-base64 alphabet characters such as newlines b'\n' are stripped
 
     plaintext = cipher.decrypt(content)
     print(plaintext)
