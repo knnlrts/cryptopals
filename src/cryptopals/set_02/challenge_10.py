@@ -1,7 +1,9 @@
 #!/usr/bin/env -S uv run --script
 # /// script
 # requires-python = ">=3.13"
-# dependencies = []
+# dependencies = [
+#   "pycryptodome",
+# ]
 # ///
 
 # Challenge 10: Implement CBC mode
@@ -20,35 +22,66 @@
 
 import base64
 from pathlib import Path
-from ..set_01.challenge_07 import (
-    aes_128_encrypt_cryptography,
-    aes_128_encrypt_pycryptodome,
-    aes_128_decrypt_cryptography,
-    aes_128_decrypt_pycryptodome,
-)
+from Crypto.Cipher import AES
 
-iv = bytes([0] * 16)
-key = b"YELLOW SUBMARINE"
 
-file_path = Path(__file__).parent / "challenge_10.txt"
-with open(file_path, "rb") as f:
-    b64content = f.read()
+class CBC:
+    def __init__(self, key: bytes, iv: bytes):
+        self.key = key
+        self.key_size = len(key)
+        self.iv = iv
+        self.cipher = AES.new(key, AES.MODE_ECB)
 
-content = base64.b64decode(b64content)
+    def _get_blocks(self, _bytes: bytes) -> list[bytes]:
+        return [
+            _bytes[i : i + self.key_size] for i in range(0, len(_bytes), self.key_size)
+        ]
 
-print(content)
-print(len(content) % 16)
+    def _xor_bytes(self, left: bytes, right: bytes) -> bytes:
+        xored_bytes = b""
+        for left_byte, right_byte in zip(left, right):
+            xored_byte = bytes([left_byte ^ right_byte])
+            xored_bytes += xored_byte
+        return xored_bytes
 
-# decrypted = aes_128_decrypt_pycryptodome(content, key, iv, "CBC")
+    def encrypt(self, plaintext: bytes) -> bytes:
+        blocks = self._get_blocks(plaintext)
+        previous = self.iv
+        ciphertext = b""
+        for block in blocks:
+            xor_result = self._xor_bytes(previous, block)
+            encrypted_block = self.cipher.encrypt(xor_result)
+            ciphertext += encrypted_block
+            previous = encrypted_block
+        return ciphertext
 
-encrypted_blocks = [content[i : i + len(key)] for i in range(0, len(content), len(key))]
+    def decrypt(self, ciphertext: bytes) -> bytes:
+        blocks = self._get_blocks(ciphertext)
+        previous = self.iv
+        plaintext = b""
+        for block in blocks:
+            decrypted_block = self.cipher.decrypt(block)
+            xor_result = self._xor_bytes(previous, decrypted_block)
+            plaintext += xor_result
+            previous = block
+        return plaintext
 
-plaintext_blocks = []
-previous = iv
-for encrypted_block in encrypted_blocks:
-    decrypted_block = aes_128_decrypt_cryptography(encrypted_block, key, None, "ECB")
-    plaintext_block = bytes([a ^ b for a, b in zip(decrypted_block, previous)])
-    plaintext_blocks.append(plaintext_block)
-    previous = encrypted_block
 
-print(plaintext_blocks)
+if __name__ == "__main__":
+    iv = bytes([0] * 16)
+    key = b"YELLOW SUBMARINE"
+    cipher = CBC(key, iv)
+
+    file_path = Path(__file__).parent / "challenge_10.txt"
+    with open(file_path, "rb") as f:
+        b64content = f.read()
+
+    content = base64.b64decode(b64content)
+
+    plaintext = cipher.decrypt(content)
+    print(plaintext)
+
+    ciphertext = cipher.encrypt(plaintext)
+    print(ciphertext)
+
+    assert content == ciphertext, "CBC cipher implementation failed!!!"
