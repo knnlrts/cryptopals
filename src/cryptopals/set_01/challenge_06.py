@@ -41,8 +41,8 @@
 # We get more tech support questions for this challenge than any of the other ones. We promise,
 # there aren't any blatant errors in this text. In particular: the "wokka wokka!!!" edit distance really is 37.
 
-from challenge_01 import base64_to_hex
-from challenge_03 import single_byte_xor_decrypt
+from src.cryptopals.set_01.challenge_01 import base64_to_hex
+from src.cryptopals.set_01.challenge_03 import single_byte_xor_decrypt
 from typing import List, Tuple
 
 

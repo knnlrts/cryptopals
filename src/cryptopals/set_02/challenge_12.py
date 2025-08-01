@@ -1,12 +1,14 @@
 #!/usr/bin/env -S uv run --script
 # /// script
 # requires-python = ">=3.13"
-# dependencies = []
+# dependencies = [
+#   "pycryptodome",
+# ]
 # ///
 
 # Challenge 12: Byte-at-a-time ECB decryption (Simple)
 #
-# Copy your oracle function to a new function that encrypts buffers under ECB mode using a consistent but unknown key
+# Copy your oracle function to a new function that encrypts byte buffers under ECB mode using a consistent but unknown key
 # (for instance, assign a single random key, once, to a global variable).
 #
 # Now take that same function and have it append to the plaintext, BEFORE ENCRYPTING, the following string:
@@ -38,3 +40,60 @@
 # This is the first challenge we've given you whose solution will break real crypto. Lots of people know that when you encrypt something in ECB mode,
 # you can see penguins through it. Not so many of them can decrypt the contents of those ciphertexts, and now you can.
 # If our experience is any guideline, this attack will get you code execution in security tests about once a year.
+
+import os
+import base64
+from Crypto.Cipher import AES
+
+from src.cryptopals.set_01.challenge_06 import find_keysize
+from src.cryptopals.set_02.challenge_11 import detect_cipher_mode
+
+
+class ECBOracle:
+    consistent_key = os.urandom(16)
+    unknown_string = """Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkg
+aGFpciBjYW4gYmxvdwpUaGUgZ2lybGllcyBvbiBzdGFuZGJ5IHdhdmluZyBq
+dXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUg
+YnkK"""
+
+    def __init__(self):
+        self.key_size = len(ECBOracle.consistent_key)
+        self.cipher = AES.new(ECBOracle.consistent_key, AES.MODE_ECB)
+
+    def _get_blocks(self, _bytes: bytes) -> list[bytes]:
+        return [
+            _bytes[i : i + self.key_size] for i in range(0, len(_bytes), self.key_size)
+        ]
+
+    def _pad_PKCS7(self, plaintext: bytes) -> bytes:
+        padding_byte = self.key_size - (len(plaintext) % self.key_size)
+        padding = bytes([padding_byte] * padding_byte)
+        return plaintext + padding
+
+    def encrypt(self, plaintext: bytes) -> bytes:
+        appended_text = plaintext + base64.b64decode(
+            ECBOracle.unknown_string, validate=False
+        )
+        padded_text = self._pad_PKCS7(appended_text)
+        ciphertext = b""
+        blocks = self._get_blocks(padded_text)
+        for block in blocks:
+            encrypted_block = self.cipher.encrypt(block)
+            ciphertext += encrypted_block
+        return ciphertext
+
+
+if __name__ == "__main__":
+    oracle = ECBOracle()
+    for i in range(1, 49):
+        _input = bytes([65] * i)
+        print(_input)
+        ciphertext = oracle.encrypt(_input)
+        print(ciphertext)
+        print(len(ciphertext))
+        print(find_keysize(ciphertext))
+        print(detect_cipher_mode(ciphertext))
+
+    for i in range(256):
+        _input = bytes([65] * 15) + bytes([i])
+        ciphertext = oracle.encrypt(_input)
